@@ -1,0 +1,3 @@
+# SMTBase
+
+Interface for SMTSolvers
