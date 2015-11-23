@@ -1,12 +1,5 @@
 ## Type expressions / variables
 ## ============================
-# IntOrSymbol = Union{Int, Symbol}
-# TypeOrSymbol = Union{Type, Symbol}
-
-typealias ScalarOrSymbol{T} Union{T, Symbol}
-
-## Convenience
-## ===========
 
 "Construct dimension param `s`"
 function variable(s::Symbol; isnonnegative = true)
@@ -44,7 +37,7 @@ end
 FixedLenVarArray{T}(p::ParameterExpr{T}) = FixedLenVarArray{T}((p,))
 
 # "create dimension parameters, e.g. dims = [3,d,1]"
-# FixedLenVarArray(vars::Tuple{Vararg{IntOrSymbol}}) = FixedLenVarArray(map(variable, vars))
+FixedLenVarArray(vars::Tuple) = FixedLenVarArray(map(variable, vars))
 
 length(x::FixedLenVarArray) = length(x.typs)
 ndims(x::FixedLenVarArray) = 1
@@ -80,15 +73,12 @@ getindex(x::VarLenVarArray, i::Integer) = x.typs[i]
 getindex{T<:Integer}(x::VarLenVarArray, i::ParameterExpr{T}) = IndexedValue(x, i)
 
 "Zero dimensional Array"
-immutable Scalar
-  val::ParameterExpr
+immutable Scalar{T} <: VarArray{T}
+  val::ParameterExpr{T}
 end
 
+eltype{T}(::Scalar{T}) = T
 length(::Scalar) = 0
 ndims(::Scalar) = 0
+shape(::Scalar) = FixedLenVarArray{Integer}(())
 string(x::Scalar) = string(x.val)
-
-# """Datastructures for arrays of type expressions.
-# They are not not Kinds themselves; just a datastructure used by other Kinds"""
-# typealias VarArray Union{FixedLenVarArray, VarLenVarArray, Scalar, ConstantArray}
-# printers(VarArray)
