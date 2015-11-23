@@ -14,7 +14,7 @@ printers(Variable)
 abstract ParameterExpr{T} <: Variable{T}
 
 "A parameter used within a parametric type, ranges over values of type `T`"
-immutable Parameter{T <: Number} <: ParameterExpr{T}
+immutable Parameter{T} <: ParameterExpr{T}
   name::Symbol  # e.g. x
 end
 
@@ -62,7 +62,7 @@ function string(c::ConstrainedParameter)
   constraints = join(constraintstrings, " & ")
 
   string(c.param, hasnonneg ? "⁺" : "", !(isempty(constraintstrings)) ?
-                                         string(" | ", constraintstrings) : " ")
+                                         string(" | ", constraintstrings) : "")
 
 end
 
